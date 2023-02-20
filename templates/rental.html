@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rentals</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <style>
+        .navbar navbar-expand-lg bg-light{
+            background-color:rgb(55, 67, 83)
+        }
+        table {
+        border-spacing: 0px;
+        table-layout: auto;
+        margin-left:auto;
+        margin-right:auto;
+        }
+        th {
+        color: rgb(0, 0, 0);
+        text-align: center;
+        border: 1px solid black;
+        }
+        td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid black;
+        }
+        tr:nth-child(even) {background-color: #e6e4e4;}
+        tr:hover {background-color: rgb(185, 212, 251);}
+        .btn{margin-right: 50px;}
+        .table-wrapper {
+        width: 90%;
+        margin: 0 auto;
+        text-align: center;
+        }
+        </style>
+  </head>
+  <body>
+    <nav class="navbar fixed-top navbar-expand-lg bg-dark text-white">
+        <div class="container-fluid">
+          <a class="navbar-brand text-white" href="/">Home</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              {% if current_user.is_authenticated %}
+              <li class="nav-item">
+                  <a class="nav-link active text-white" aria-current="page" href="/transaction">Transactions</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link text-white" href="/rental">Rentals</a>
+              </li>
+            </ul>
+              <a class="nav-link text-white" href="/logout">Logout</a>
+          {% else %}
+              <a class="nav-link text-white" href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <div class = 'container'>  
+        <br></br><br></br>   
+        <h1>Real Estate Rentals Data</h1>
+    </div>
+    <div class="container pt-3 pb-5 content-height container-wrapper re-transaction">
+      <form id="trxFilter" method="POST" action="" novalidate class="needs-validation">
+          <div class="row search-panel-wrap">
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mb-md-2">
+                <div class="form-group field-style select-control">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" id="startDate" name="startDate" style ="height:37.6px;width:306px;">              
+                </div>
+            </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mb-md-2">
+                  <div class="form-group field-style select-control">
+                      <label for="rental_pversion">Version</label>
+                      <select id="rental_pversion" name="rental_pversion" class="form-control valid-validation">
+                          <option value="">All</option>
+                          <option value="0"> New</option>
+                          <option value="1"> Renewal</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mb-md-2">
+                  <div class="form-group field-style">
+                      <label for="rental_pAreaId">Area</label>
+                      <select id="rental_pAreaId" name="rental_pAreaId" class="form-control chosen-select">
+                          <option value="">All</option>
+                          {% for i in range(area_length) %}
+                          <option value="{{area_list[i]}}">{{area_list[i]}}</option>
+                          {% endfor %}
+                      </select>    
+                  </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mb-md-2">
+                  <div class="form-group field-style">
+                      <label for="rental_pProjectId">Project</label>
+                      <select id="rental_pProjectId" name="rental_pProjectId" class="form-control chosen-select">
+                          <option value="">All</option>
+                          {% for i in range(project_length) %}
+                          <option value="{{project_list[i]}}">{{project_list[i]}}</option>
+                          {% endfor %}
+                      </select>    
+                  </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mb-md-2">
+                  <div class="form-group field-style select-control">
+                      <label for="rental_pUsageId">Usage</label>
+                      <select id="rental_pUsageId" name="rental_pUsageId" class="form-control valid-validation">
+                          <option value="">All</option>
+                          <option value="1"> Residential</option>
+                          <option value="2"> Commercial</option>
+                          <option value="3"> Other</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mb-md-2">
+                  <div class="form-group field-style select-control">
+                      <label for="rental_pPropType">Property Type</label>
+                      <select id="rental_pPropType" name="rental_pPropType" class="form-control valid-validation">
+                          <option value="">All</option>
+                          <option value="1"> Land</option>
+                          <option value="2"> Building</option>
+                          <option value="3"> Unit</option>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mb-md-2">
+                  <label for="PropertySizeSqM" class = "form-label">Property Size (sq.m)</label>
+                  <input type="text"  name = "PropertySizeSqM" id = "PropertySizeSqM" placeholder="00.00" style ="height:37.6px;width:306px;">
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 mb-md-2">
+                  <div>
+                  <label for="PropertySizeSqFt" class="form-label">Property Size (sq.ft)</label>
+                  <input type="text" name = "PropertySizeSqFt" id="PropertySizeSqFt" placeholder="00.00" style ="height:37.6px;width:306px;">
+                  </div>
+              </div>
+              <div class="col-md-12 text-end">
+              <input type="submit" class="btn btn-outline-dark" value="Submit">
+              <input type="reset" class="btn btn-outline-dark" value="Reset">
+              </div>
+              </div>
+          </div>
+      </form>
+      {% block content %}
+      {% endblock %}
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </body>
+</html>
+<script>
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; // January is 0
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+      dd = '0' + dd;
+    } 
+    if (mm < 10) {
+      mm = '0' + mm;
+    } 
+    today = yyyy + '-' + mm + '-' + dd;
+    document.getElementById("endDate").max = today;
+    document.getElementById("startDate").max = today;
+  </script>
